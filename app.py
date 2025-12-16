@@ -1,9 +1,11 @@
 import streamlit as st
 import pandas as pd
-import joblib
+import pickle
 
-# Load model bundle
-bundle = joblib.load("bank_marketing_model.pkl")
+# Load model bundle (using pickle)
+with open("bank_marketing_model.pkl", "rb") as f:
+    bundle = pickle.load(f)
+
 preprocessor = bundle["preprocessor"]
 model = bundle["model"]
 le = bundle["label_encoder"]
@@ -15,9 +17,12 @@ st.markdown("Predict if a customer will subscribe to a **term deposit**")
 
 # ---- User Inputs ----
 age = st.number_input("Age", 18, 100)
-job = st.selectbox("Job", ["admin.", "technician", "services", "management", "retired",
-                           "blue-collar", "unemployed", "entrepreneur", "housemaid",
-                           "self-employed", "student", "unknown"])
+job = st.selectbox(
+    "Job",
+    ["admin.", "technician", "services", "management", "retired",
+     "blue-collar", "unemployed", "entrepreneur", "housemaid",
+     "self-employed", "student", "unknown"]
+)
 
 marital = st.selectbox("Marital Status", ["married", "single", "divorced"])
 education = st.selectbox("Education", ["primary", "secondary", "tertiary", "unknown"])
@@ -61,3 +66,4 @@ if st.button("Predict"):
         st.success("✅ Customer WILL subscribe to term deposit")
     else:
         st.error("❌ Customer will NOT subscribe")
+
